@@ -24,6 +24,10 @@ module.exports=function(req,res){
     commandstring+=temp;
   });
 
+  var stop="";
+  _.forEach(params.stop,function(obj){
+    stop+="|grep -v '"+obj.term+"'";
+  });
 
 
 
@@ -38,7 +42,7 @@ module.exports=function(req,res){
       searchresult=stdin.split("\n");
 
     }
-    child.exec(commandstring+tokenize,function(err,stdin,stdout){
+    child.exec(commandstring+stop+tokenize,function(err,stdin,stdout){
       if(stdin.length<=0){
         tokenresult="no result";
       }else{

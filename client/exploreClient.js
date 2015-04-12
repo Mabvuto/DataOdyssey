@@ -3,11 +3,20 @@ function toHTML(text) {
   return text.split('\n').join("<br>")
 }
 
-var temp={search:[]};
-function search(filterterm){
+var temp={search:[],stop:[]};
+function search(filterterm,op){
+
 
   if(filterterm){
-    temp.search.push({"exclude":false,"term":filterterm})
+    if(op=="add"){
+      temp.search.push({"exclude":false,"term":filterterm})
+    }
+    if(op=="remove"){
+      temp.search.push({"exclude":true,"term":filterterm})
+    }
+    if(op=="ignore"){
+      temp.stop.push({"term":filterterm})
+    }
   }
 
 
@@ -17,7 +26,7 @@ function search(filterterm){
 
 
       var keysword=""
-      var templateTerm='<a  class="terms">{{term}}</a><br>'
+      var templateTerm='{{count}} x {{term}} <a term="{{term}}" class="terms">add</a>   <a term="{{term}}" class="removeterms">remove</a>   <a term="{{term}}" class="ignoreterms">ignore</a><br>'
       _.forEach(obj.tokens,function(obj){
         keysword+=Mustache.render(templateTerm,obj)
       });
@@ -37,7 +46,15 @@ function search(filterterm){
 }
 
 $('body').on('click', 'a.terms', function() {
-  search($(this).text())
+  search($(this).attr("term"),"add")
+});
+
+$('body').on('click', 'a.removeterms', function() {
+  search($(this).attr("term"),"remove")
+});
+
+$('body').on('click', 'a.ignoreterms', function() {
+  search($(this).attr("term"),"ignore")
 });
 
 
